@@ -26,6 +26,9 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.data:spring-data-rest-hal-explorer")
+    implementation("com.auth0:java-jwt:4.4.0")
+    // https://mvnrepository.com/artifact/org.springframework/spring-aop
+    implementation("org.springframework:spring-aop:6.1.10")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

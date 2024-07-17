@@ -1,13 +1,15 @@
 package cn.llonvne.testjpa.db.internal.user.entity
 
+import cn.llonvne.testjpa.db.internal.user.UserInternalApi
 import jakarta.persistence.*
 import java.util.*
 
 /**
- * 用于在JPA表示用户实体的的直接类型
+ * Represent a User Entity that interact with Spring Data JPA
  */
 @Entity
 @Table(name = "db_user")
+@UserInternalApi
 data class DbUserEntity(
     @Id
     @Column(name = "user_id", nullable = false, unique = true)

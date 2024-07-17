@@ -1,14 +1,20 @@
 package cn.llonvne.testjpa.db.internal.user.services
 
+import cn.llonvne.testjpa.db.internal.user.UserInternalApi
 import cn.llonvne.testjpa.db.internal.user.entity.DbUserFollow
 import cn.llonvne.testjpa.db.internal.user.entity.DbUserFollowIdType
-import cn.llonvne.testjpa.db.internal.user.repo.DbUserFollowTableRepository
+import cn.llonvne.testjpa.db.internal.user.repo.DbUserFollowRepository
 import org.springframework.stereotype.Service
 
+/**
+ * Service class for DbUserFollow
+ */
 @Service
+@UserInternalApi
 data class InternalDbUserFollowService(
-    val repository: DbUserFollowTableRepository
+    val repository: DbUserFollowRepository
 ) {
+    @OptIn(UserInternalApi::class)
     fun isFollow(followerId: String, followeeId: String): Boolean {
         return repository.existsById(DbUserFollowIdType(userId = followerId, followeeId = followeeId))
     }

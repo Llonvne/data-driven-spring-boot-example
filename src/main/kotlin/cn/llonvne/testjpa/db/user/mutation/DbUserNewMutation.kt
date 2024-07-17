@@ -1,7 +1,7 @@
 package cn.llonvne.testjpa.db.user.mutation
 
 /**
- * Represent a insert mutation of [cn.llonvne.testjpa.db.user.DbUser]
+ * Represent a mutation that insert a User
  */
 data class DbUserNewMutation(
     val username: String,

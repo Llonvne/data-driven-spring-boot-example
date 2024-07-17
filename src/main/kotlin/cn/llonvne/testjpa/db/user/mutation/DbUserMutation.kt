@@ -1,6 +1,6 @@
 package cn.llonvne.testjpa.db.user.mutation
 
 /**
- * Represent a Mutation of [cn.llonvne.testjpa.db.user.DbUser]
+ * Represent a Mutation for User domain
  */
 sealed interface DbUserMutation

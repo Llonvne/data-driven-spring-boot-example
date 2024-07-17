@@ -2,9 +2,10 @@ package cn.llonvne.testjpa.db.user
 
 import cn.llonvne.testjpa.db.internal.EntityConverter
 import cn.llonvne.testjpa.db.internal.PasswordEncoder
+import cn.llonvne.testjpa.db.internal.user.UserInternalApi
 import cn.llonvne.testjpa.db.internal.user.entity.DbUserEntity
 import cn.llonvne.testjpa.db.internal.user.repo.DbUserEntityRepository
-import cn.llonvne.testjpa.db.internal.user.repo.DbUserFollowTableRepository
+import cn.llonvne.testjpa.db.internal.user.repo.DbUserFollowRepository
 import cn.llonvne.testjpa.db.internal.user.services.InternalDbUserEntityService
 import cn.llonvne.testjpa.db.internal.user.services.InternalDbUserFollowService
 import cn.llonvne.testjpa.db.result.MutationResult
@@ -12,18 +13,20 @@ import cn.llonvne.testjpa.db.result.MutationTypedResult
 import cn.llonvne.testjpa.db.result.OneQueryResult
 import cn.llonvne.testjpa.db.result.OneQueryTypedResult
 import cn.llonvne.testjpa.db.user.mutation.*
+import cn.llonvne.testjpa.db.user.pub.DbUser
 import cn.llonvne.testjpa.db.user.query.DbUserFolloweesQuery
 import cn.llonvne.testjpa.db.user.query.DbUserGetByIdQuery
 import cn.llonvne.testjpa.db.user.query.DbUserLoginQuery
 import cn.llonvne.testjpa.db.user.type.*
 import org.springframework.stereotype.Service
 
+@OptIn(UserInternalApi::class)
 @Service
-class DbUserService(
+class DbUserService constructor(
     private val repository: DbUserEntityRepository,
     private val dbUserConverter: EntityConverter<DbUserEntity, DbUser>,
     private val entityService: InternalDbUserEntityService,
-    private val followRepo: DbUserFollowTableRepository,
+    private val followRepo: DbUserFollowRepository,
     private val followService: InternalDbUserFollowService
 ) {
     fun newUser(newUser: DbUserNewMutation): MutationResult<DbUser> {

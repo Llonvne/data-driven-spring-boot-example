@@ -1,11 +1,16 @@
 package cn.llonvne.testjpa.db.internal.user.entity
 
+import cn.llonvne.testjpa.db.internal.user.UserInternalApi
 import jakarta.persistence.*
 import java.io.Serializable
 
+/**
+ * Represents a Join Table of User which maps the relationship between users who follow each other.
+ */
 @Entity
 @IdClass(DbUserFollowIdType::class)
 @Table(name = "user_follow")
+@UserInternalApi
 data class DbUserFollow(
     @Id
     @Column(name = "follower_id", nullable = false)
@@ -16,6 +21,10 @@ data class DbUserFollow(
     val followeeId: String
 )
 
+/**
+ * Represents the composite primary key of the `user_follow` table.
+ */
+@UserInternalApi
 data class DbUserFollowIdType(
     val userId: String = "",
     val followeeId: String = ""

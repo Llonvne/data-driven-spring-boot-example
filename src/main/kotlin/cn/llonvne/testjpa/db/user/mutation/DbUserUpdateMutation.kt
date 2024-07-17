@@ -1,6 +1,6 @@
 package cn.llonvne.testjpa.db.user.mutation
 
-import cn.llonvne.testjpa.db.user.DbUser
+import cn.llonvne.testjpa.db.user.pub.DbUser
 
 /**
  * Represent a Update for [cn.llonvne.testjpa.db.user.DbUser];
