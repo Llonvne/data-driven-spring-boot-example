@@ -30,10 +30,6 @@ inline fun <reified R> OneResponse<R>.toResponseEntity(): ResponseEntity<*> {
     }
 }
 
-fun <E : Any> E.one(message: String = "", code: HttpStatus = HttpStatus.OK): OneResponse.One<E> {
-    return OneResponse.One(this, message, code)
-}
-
 fun <E : Any> OneQueryResult<E>.one(
     noneStatus: HttpStatus,
     okStatus: HttpStatus = HttpStatus.OK,
