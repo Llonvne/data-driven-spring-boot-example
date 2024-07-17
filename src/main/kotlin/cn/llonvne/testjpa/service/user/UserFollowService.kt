@@ -3,8 +3,8 @@ package cn.llonvne.testjpa.service.user
 import cn.llonvne.testjpa.db.user.DbUserService
 import cn.llonvne.testjpa.db.user.mutation.DbUserFollowMutation
 import cn.llonvne.testjpa.db.user.query.DbUserFolloweesQuery
-import cn.llonvne.testjpa.service.internal.response.OneResponse
-import cn.llonvne.testjpa.service.internal.response.one
+import cn.llonvne.testjpa.service.response.OneResponse
+import cn.llonvne.testjpa.service.response.one
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 

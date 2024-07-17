@@ -7,7 +7,7 @@ import cn.llonvne.testjpa.db.user.query.DbUserLoginQuery
 import cn.llonvne.testjpa.jwt.Jwt
 import cn.llonvne.testjpa.req2resp.UserLoginRequest
 import cn.llonvne.testjpa.req2resp.UserLoginResponse
-import cn.llonvne.testjpa.service.internal.response.OneResponse
+import cn.llonvne.testjpa.service.response.OneResponse
 import org.springframework.stereotype.Service
 
 @Service

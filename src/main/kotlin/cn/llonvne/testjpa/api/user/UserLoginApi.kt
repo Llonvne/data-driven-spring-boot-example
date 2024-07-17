@@ -1,7 +1,7 @@
 package cn.llonvne.testjpa.api.user
 
 import cn.llonvne.testjpa.req2resp.UserLoginRequest
-import cn.llonvne.testjpa.service.internal.response.toResponseEntity
+import cn.llonvne.testjpa.service.response.toResponseEntity
 import cn.llonvne.testjpa.service.user.UserAuthenticationService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping

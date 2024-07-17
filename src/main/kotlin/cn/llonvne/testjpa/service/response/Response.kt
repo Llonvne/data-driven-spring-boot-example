@@ -1,4 +1,4 @@
-package cn.llonvne.testjpa.service.internal.response
+package cn.llonvne.testjpa.service.response
 
 import cn.llonvne.testjpa.db.result.MutationTypedResult
 import cn.llonvne.testjpa.db.result.OneQueryResult
