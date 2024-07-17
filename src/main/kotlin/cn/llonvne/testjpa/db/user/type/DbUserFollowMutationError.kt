@@ -1,4 +1,7 @@
 package cn.llonvne.testjpa.db.user.type
 
-enum class DbUserFollowMuation {
+enum class DbUserFollowMutationError {
+    FollowerIdNotExist,
+    FolloweeIdNotExist,
+    AlreadyFollowed
 }

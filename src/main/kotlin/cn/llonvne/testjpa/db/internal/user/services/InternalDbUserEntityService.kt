@@ -1,4 +1,4 @@
-package cn.llonvne.testjpa.db.internal.user
+package cn.llonvne.testjpa.db.internal.user.services
 
 import cn.llonvne.testjpa.db.internal.user.entity.DbUserEntity
 import cn.llonvne.testjpa.db.internal.user.repo.DbUserEntityRepository

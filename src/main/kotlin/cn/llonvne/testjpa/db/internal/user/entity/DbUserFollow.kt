@@ -1,13 +1,11 @@
 package cn.llonvne.testjpa.db.internal.user.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.IdClass
+import jakarta.persistence.*
 import java.io.Serializable
 
 @Entity
 @IdClass(DbUserFollowIdType::class)
+@Table(name = "user_follow")
 data class DbUserFollow(
     @Id
     @Column(name = "follower_id", nullable = false)

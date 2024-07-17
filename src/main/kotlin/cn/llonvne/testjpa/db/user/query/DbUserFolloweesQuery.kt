@@ -1,3 +1,3 @@
 package cn.llonvne.testjpa.db.user.query
 
-data class DbUserFolloweesQuery()
+data class DbUserFolloweesQuery(val userId: String)

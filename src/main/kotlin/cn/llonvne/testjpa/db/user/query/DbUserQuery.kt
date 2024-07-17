@@ -1,4 +1,6 @@
 package cn.llonvne.testjpa.db.user.query
 
-interface DbUserQuery {
-}
+/**
+ * Represent a Query of [cn.llonvne.testjpa.db.user.DbUser]
+ */
+sealed interface DbUserQuery

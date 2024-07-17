@@ -1,7 +1,7 @@
-package cn.llonvne.testjpa.db.internal.entity
+package cn.llonvne.testjpa.db.internal.user.entity
 
 import jakarta.persistence.*
-import java.util.UUID
+import java.util.*
 
 /**
  * 用于在JPA表示用户实体的的直接类型
@@ -17,5 +17,13 @@ data class DbUserEntity(
     val username: String,
 
     @Column(name = "password", nullable = false)
-    val password: String
+    val password: String,
+
+    @ManyToMany
+    @JoinTable(
+        name = "user_follow",
+        joinColumns = [JoinColumn(name = "follower_id")],
+        inverseJoinColumns = [JoinColumn(name = "followee_id")]
+    )
+    val followees: Set<DbUserEntity> = setOf(),
 )

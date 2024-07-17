@@ -1,4 +1,4 @@
-package org.worker996.kotlinsprintbootpd.util
+package cn.llonvne.testjpa.db.internal
 
 import java.security.MessageDigest
 

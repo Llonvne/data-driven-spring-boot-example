@@ -1,6 +1,6 @@
-package cn.llonvne.testjpa.db.internal.repo
+package cn.llonvne.testjpa.db.internal.user.repo
 
-import cn.llonvne.testjpa.db.internal.entity.DbUserEntity
+import cn.llonvne.testjpa.db.internal.user.entity.DbUserEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

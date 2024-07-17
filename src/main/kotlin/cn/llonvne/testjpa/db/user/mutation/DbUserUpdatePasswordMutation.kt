@@ -1,4 +1,7 @@
 package cn.llonvne.testjpa.db.user.mutation
 
-class UserUpdatePasswordMutation {
-}
+data class DbUserUpdatePasswordMutation(
+    val userId: String,
+    val oldPassword: String,
+    val newPassword: String
+)

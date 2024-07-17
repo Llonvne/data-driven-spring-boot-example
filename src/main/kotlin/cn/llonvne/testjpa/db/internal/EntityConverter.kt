@@ -1,4 +1,8 @@
 package cn.llonvne.testjpa.db.internal
 
-interface Conveter {
+/**
+ * Represent a Converter that converter a internal database entity to public representation
+ */
+fun interface EntityConverter<IN, OUT> {
+    fun convert(input: IN): OUT
 }
