@@ -10,15 +10,15 @@ import org.springframework.stereotype.Service
  */
 @Service
 @UserInternalApi
-class InternalDbUserEntityService(private val dbUserEntityRepository: DbUserEntityRepository) {
+class InternalDbUserEntityService(private val entityRepo: DbUserEntityRepository) {
     @OptIn(UserInternalApi::class)
     fun getUserEntityByIdRaw(userId: String): DbUserEntity? {
         return kotlin.runCatching {
-            dbUserEntityRepository.getReferenceById(userId)
+            entityRepo.getReferenceById(userId)
         }.getOrNull()
     }
 
     fun isUserIdExist(userId: String): Boolean {
-        return dbUserEntityRepository.existsById(userId)
+        return entityRepo.existsById(userId)
     }
 }

@@ -1,5 +1,15 @@
 package cn.llonvne.testjpa.db.result
 
+import cn.llonvne.testjpa.db.internal.user.DisgustingQueryMutationResultShorthandApi
+
+@DisgustingQueryMutationResultShorthandApi
+typealias OQTR<E, ERR> = OneQueryTypedResult<E, ERR>
+@DisgustingQueryMutationResultShorthandApi
+typealias OQTR_O<E, ERR> = OneQueryTypedResult.One<E, ERR>
+@DisgustingQueryMutationResultShorthandApi
+typealias OQTR_N<E, ERR> = OneQueryTypedResult.None<E, ERR>
+
+
 /**
  * Represent a result of the query with a specific error type.
  */

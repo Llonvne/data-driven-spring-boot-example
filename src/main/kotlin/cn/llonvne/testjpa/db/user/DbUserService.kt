@@ -8,118 +8,118 @@ import cn.llonvne.testjpa.db.internal.user.repo.DbUserEntityRepository
 import cn.llonvne.testjpa.db.internal.user.repo.DbUserFollowRepository
 import cn.llonvne.testjpa.db.internal.user.services.InternalDbUserEntityService
 import cn.llonvne.testjpa.db.internal.user.services.InternalDbUserFollowService
-import cn.llonvne.testjpa.db.result.MutationResult
-import cn.llonvne.testjpa.db.result.MutationTypedResult
-import cn.llonvne.testjpa.db.result.OneQueryResult
-import cn.llonvne.testjpa.db.result.OneQueryTypedResult
+import cn.llonvne.testjpa.db.result.*
 import cn.llonvne.testjpa.db.user.mutation.*
 import cn.llonvne.testjpa.db.user.pub.DbUser
 import cn.llonvne.testjpa.db.user.query.DbUserFolloweesQuery
 import cn.llonvne.testjpa.db.user.query.DbUserGetByIdQuery
 import cn.llonvne.testjpa.db.user.query.DbUserLoginQuery
 import cn.llonvne.testjpa.db.user.type.*
+import cn.llonvne.testjpa.db.user.type.DbUserLoginQueryError.PasswordNotCorrect
+import cn.llonvne.testjpa.db.user.type.DbUserLoginQueryError.UsernameNotExist
+import cn.llonvne.testjpa.db.user.type.DbUserUpdateMutationError.IdNotExist
+import cn.llonvne.testjpa.db.user.type.DbUserUpdatePasswordMutationError.OldPasswordNotCorrect
 import org.springframework.stereotype.Service
 
 @OptIn(UserInternalApi::class)
 @Service
-class DbUserService constructor(
+class DbUserService(
     private val repository: DbUserEntityRepository,
     private val dbUserConverter: EntityConverter<DbUserEntity, DbUser>,
     private val entityService: InternalDbUserEntityService,
     private val followRepo: DbUserFollowRepository,
     private val followService: InternalDbUserFollowService
 ) {
-    fun newUser(newUser: DbUserNewMutation): MutationResult<DbUser> {
+    fun newUser(newUser: DbUserNewMutation): MR<DbUser> {
         if (repository.findByUsername(newUser.username) != null) {
-            return MutationResult.Failed("username already exist.")
+            return MR_N("username already exist.")
         }
 
-        val dbUserEntity =
-            DbUserEntity(username = newUser.username, password = PasswordEncoder.encode(newUser.password))
+        val entity = DbUserEntity(username = newUser.username, password = PasswordEncoder.encode(newUser.password))
 
-        val userEntity: DbUserEntity = repository.save(dbUserEntity)
+        val userEntity = repository.save(entity)
 
         val user = dbUserConverter.convert(userEntity)
 
-        return MutationResult.Success(user, "successful create user")
+        return MR_O(user, "successful create user")
     }
 
-    fun login(loginQuery: DbUserLoginQuery): OneQueryTypedResult<DbUser, DbUserLoginQueryError> {
-        val userEntity = repository.findByUsername(loginQuery.username)
-            ?: return OneQueryTypedResult.None(DbUserLoginQueryError.UsernameNotExist)
+    fun login(query: DbUserLoginQuery): OQTR<DbUser, DbUserLoginQueryError> {
+        val entity = repository.findByUsername(query.username)
+            ?: return OQTR_N(UsernameNotExist)
 
-        if (PasswordEncoder.matches(rawPassword = loginQuery.password, encodedPassword = userEntity.password)) {
+        if (PasswordEncoder.matches(rawPassword = query.password, encodedPassword = entity.password)) {
 
-            val user = dbUserConverter.convert(userEntity)
+            val user = dbUserConverter.convert(entity)
 
-            return OneQueryTypedResult.One(user, "successful login")
+            return OQTR_O(user, "successful login")
         } else {
-            return OneQueryTypedResult.None(DbUserLoginQueryError.PasswordNotCorrect)
+            return OQTR_N(PasswordNotCorrect)
         }
     }
 
-    fun getById(getByIdQuery: DbUserGetByIdQuery): OneQueryResult<DbUser> {
-        val userEntity =
-            entityService.getUserEntityByIdRaw(getByIdQuery.userId) ?: return OneQueryResult.None("User id not exist")
+    fun getById(query: DbUserGetByIdQuery): OQR<DbUser> {
+        val entity =
+            entityService.getUserEntityByIdRaw(query.userId) ?: return OQR_N("User id not exist")
 
-        return OneQueryResult.One(dbUserConverter.convert(userEntity))
+        return OQR_O(dbUserConverter.convert(entity))
     }
 
-    fun update(dbUserUpdateMutation: DbUserUpdateMutation): MutationTypedResult<DbUser, DbUserUpdateMutationError> {
-        val userEntity = entityService.getUserEntityByIdRaw(dbUserUpdateMutation.dbUser.id)
-            ?: return MutationTypedResult.None(DbUserUpdateMutationError.IdNotExist)
+    fun update(mutation: DbUserUpdateMutation): MTR<DbUser, DbUserUpdateMutationError> {
+        val entity = entityService.getUserEntityByIdRaw(mutation.dbUser.id)
+            ?: return MTR_N(IdNotExist)
 
-        val updatedUser = userEntity.copy(username = dbUserUpdateMutation.dbUser.username)
+        val updatedUser = entity.copy(username = mutation.dbUser.username)
 
         val result = repository.save(updatedUser)
 
         val dbUser = dbUserConverter.convert(result)
 
-        return MutationTypedResult.One(dbUser)
+        return MTR_O(dbUser)
     }
 
-    fun updatePassword(mutation: DbUserUpdatePasswordMutation): MutationTypedResult<Unit, DbUserUpdatePasswordMutationError> {
-        val userEntity = entityService.getUserEntityByIdRaw(mutation.userId)
-            ?: return MutationTypedResult.None(DbUserUpdatePasswordMutationError.IdNotExist)
+    fun updatePassword(mutation: DbUserUpdatePasswordMutation): MTR<Unit, DbUserUpdatePasswordMutationError> {
+        val entity = entityService.getUserEntityByIdRaw(mutation.userId)
+            ?: return MTR_N(DbUserUpdatePasswordMutationError.IdNotExist)
 
-        if (PasswordEncoder.matches(mutation.oldPassword, userEntity.password)) {
-            val updatedUserEntity = userEntity.copy(password = PasswordEncoder.encode(mutation.newPassword))
+        if (PasswordEncoder.matches(mutation.oldPassword, entity.password)) {
+            val updatedEntity = entity.copy(password = PasswordEncoder.encode(mutation.newPassword))
 
-            repository.save(updatedUserEntity)
+            repository.save(updatedEntity)
 
-            return MutationTypedResult.One(Unit)
+            return MTR_O(Unit)
         } else {
-            return MutationTypedResult.None(DbUserUpdatePasswordMutationError.OldPasswordNotCorrect)
+            return MTR_N(OldPasswordNotCorrect)
         }
     }
 
-    fun follow(mutation: DbUserFollowMutation): MutationTypedResult<Unit, DbUserFollowMutationError> {
+    fun follow(mutation: DbUserFollowMutation): MTR<Unit, DbUserFollowMutationError> {
         if (!entityService.isUserIdExist(mutation.follower)) {
-            return MutationTypedResult.None(DbUserFollowMutationError.FollowerIdNotExist)
+            return MTR_N(DbUserFollowMutationError.FollowerIdNotExist)
         }
         if (!entityService.isUserIdExist(mutation.followee)) {
-            return MutationTypedResult.None(DbUserFollowMutationError.FolloweeIdNotExist)
+            return MTR_N(DbUserFollowMutationError.FolloweeIdNotExist)
         }
         if (followService.isFollow(followerId = mutation.follower, followeeId = mutation.followee)) {
-            return MutationTypedResult.None(DbUserFollowMutationError.AlreadyFollowed)
+            return MTR_N(DbUserFollowMutationError.AlreadyFollowed)
         }
 
         followService.follow(followerId = mutation.follower, followeeId = mutation.followee)
 
-        return MutationTypedResult.One(Unit)
+        return MTR_O(Unit)
     }
 
-    fun unfollow(mutation: DbUserUnfollowMutation): MutationTypedResult<Unit, DbUserUnfollowMutationError> {
+    fun unfollow(mutation: DbUserUnfollowMutation): MTR<Unit, DbUserUnfollowMutationError> {
         if (!entityService.isUserIdExist(mutation.follower)) {
-            return MutationTypedResult.None(DbUserUnfollowMutationError.FollowerIdNotExist)
+            return MTR_N(DbUserUnfollowMutationError.FollowerIdNotExist)
         }
         if (!entityService.isUserIdExist(mutation.followee)) {
-            return MutationTypedResult.None(DbUserUnfollowMutationError.FolloweeIdNotExist)
+            return MTR_N(DbUserUnfollowMutationError.FolloweeIdNotExist)
         }
         if (!followService.isFollow(followerId = mutation.follower, followeeId = mutation.followee)) {
-            return MutationTypedResult.None(DbUserUnfollowMutationError.NotFollowed)
+            return MTR_N(DbUserUnfollowMutationError.NotFollowed)
         }
-        return MutationTypedResult.One(
+        return MTR_O(
             followService.unfollow(
                 followerId = mutation.follower,
                 followeeId = mutation.followee
@@ -129,9 +129,9 @@ class DbUserService constructor(
 
     fun followees(query: DbUserFolloweesQuery): OneQueryTypedResult<List<String>, DbUserFolloweesQueryError> {
         if (!entityService.isUserIdExist(query.userId)) {
-            return OneQueryTypedResult.None(DbUserFolloweesQueryError.UserNotExist)
+            return OQTR_N(DbUserFolloweesQueryError.UserNotExist)
         }
-        return OneQueryTypedResult.One(
+        return OQTR_O(
             followRepo.findByUserId(query.userId).map {
                 it.followeeId
             }
