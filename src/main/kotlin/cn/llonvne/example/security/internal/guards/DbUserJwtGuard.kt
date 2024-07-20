@@ -1,12 +1,15 @@
 package cn.llonvne.example.security.internal.guards
 
 import cn.llonvne.example.db.token.service.UserTokenService
+import cn.llonvne.example.db.user.DbUserService
 import cn.llonvne.example.db.user.pub.DbUser
 import cn.llonvne.example.jwt.Jwt
+import cn.llonvne.example.req2resp.validate.validate
 import cn.llonvne.example.security.Guard
 import cn.llonvne.example.security.Guard.Companion.GuardResult
 import cn.llonvne.example.security.GuardType
 import cn.llonvne.example.security.internal.SecurityInternalApi
+import cn.llonvne.example.service.user.UserAuthenticationService
 import cn.llonvne.example.tools.storeNotNull
 import com.auth0.jwt.exceptions.*
 import jakarta.servlet.http.HttpServletRequest
@@ -19,7 +22,8 @@ import kotlin.reflect.KClass
 @Component
 class DbUserJwtGuard(
     private val jwt: Jwt<DbUser>,
-    private val userTokenService: UserTokenService
+    private val userTokenService: UserTokenService,
+    private val userService: UserAuthenticationService
 ) : Guard<DbUser> {
 
     override val name = GuardType.UserToken
@@ -46,6 +50,8 @@ class DbUserJwtGuard(
         if (!userTokenService.validate(token)) {
             return GuardResult.Failed("Token invalid", HttpStatus.UNAUTHORIZED)
         }
+
+        userService
 
         storeNotNull(dbUser)
 

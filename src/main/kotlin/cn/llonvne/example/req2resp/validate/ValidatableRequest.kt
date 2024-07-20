@@ -1,9 +1,11 @@
 package cn.llonvne.example.req2resp.validate
 
 import cn.llonvne.example.req2resp.validate.ValidatableRequest.Validated
+import cn.llonvne.example.const.AopOrder
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
+import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
@@ -66,6 +68,7 @@ fun <R> R.validate(dsl: ValidateRequestDsl<R>.() -> Unit): Validated<R> {
 
 @Aspect
 @Component
+@Order(AopOrder.RequestValidation)
 class ValidatableRequestAspect {
     @Around("args(request) && within(cn.llonvne.example.api.*.*)")
     fun beforeMethod(joinPoint: ProceedingJoinPoint, request: ValidatableRequest<*>): Any? {
