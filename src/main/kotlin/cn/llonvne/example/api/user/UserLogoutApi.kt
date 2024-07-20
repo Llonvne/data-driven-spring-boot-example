@@ -1,6 +1,5 @@
 package cn.llonvne.example.api.user
 
-import cn.llonvne.example.req2resp.abc.TestRequest
 import cn.llonvne.example.security.shorthand.LoginScope
 import cn.llonvne.example.service.response.toResponseEntity
 import cn.llonvne.example.service.user.UserAuthenticationService
@@ -20,10 +19,5 @@ class UserLogoutApi(
     @PostMapping("/logout")
     fun logout() = LoginScope.loginOrUnauthorized {
         userAuthenticationService.expire(tokenRaw).toResponseEntity()
-    }
-
-    @PostMapping("/testa")
-    fun test(@RequestBody request: TestRequest): ResponseEntity<*> {
-        return ResponseEntity<String>("1", HttpStatus.OK)
     }
 }

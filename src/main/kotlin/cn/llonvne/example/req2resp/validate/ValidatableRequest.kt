@@ -1,6 +1,6 @@
-package cn.llonvne.example.req2resp.abc
+package cn.llonvne.example.req2resp.validate
 
-import cn.llonvne.example.req2resp.abc.ValidatableRequest.Validated
+import cn.llonvne.example.req2resp.validate.ValidatableRequest.Validated
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
@@ -8,9 +8,19 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 import kotlin.reflect.KProperty
-import kotlin.reflect.KProperty1
 
+/**
+ * Indicated a Http Request Body need to be validated.
+ *
+ * it will be processed by [cn.llonvne.example.req2resp.validate.ValidatableRequestAspect]
+ *
+ * @param R request type
+ */
 fun interface ValidatableRequest<R> {
+
+    /**
+     * validate function implementation by Request
+     */
     fun validate(): Validated<R>
 
     sealed interface Validated<R> {
@@ -52,14 +62,6 @@ fun <R> R.validate(dsl: ValidateRequestDsl<R>.() -> Unit): Validated<R> {
     val dslImpl = ValidateRequestDsl(this)
     dslImpl.dsl()
     return dslImpl.build()
-}
-
-data class TestRequest(val a: Int) : ValidatableRequest<TestRequest> {
-    override fun validate(): Validated<TestRequest> = validate {
-        of(::a, "a must be positive or zero") {
-            it >= 0
-        }
-    }
 }
 
 @Aspect
