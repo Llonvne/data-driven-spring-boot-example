@@ -21,7 +21,14 @@ sealed interface MutationResult<E> {
         fun <R, R2> MR<R>.map(dsl: (R) -> R2): MR<R2> {
             return when (this) {
                 is Failed -> Failed(message)
-                is Success -> Success(dsl(value),message)
+                is Success -> Success(dsl(value), message)
+            }
+        }
+
+        fun <R, R2> MR<R>.mapTo(dsl: (R) -> MR<R2>): MR<R2> {
+            return when (this) {
+                is Failed -> Failed(message)
+                is Success -> dsl(value)
             }
         }
     }

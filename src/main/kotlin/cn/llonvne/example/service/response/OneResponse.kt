@@ -93,10 +93,16 @@ fun <E : Any> OneQueryResult<E>.one(
 fun <E : Any, ERR : Enum<*>> OneQueryTypedResult<E, ERR>.one(
     noneStatus: HttpStatus,
     okStatus: HttpStatus = HttpStatus.OK,
+    oneMessage: String? = null,
+    noneMessage: String? = null
 ): OneResponse<E> {
     return when (this) {
-        is OneQueryTypedResult.None -> None(status = noneStatus, message = err.toString())
-        is OneQueryTypedResult.One -> One(status = okStatus, message = this.message, response = this.value)
+        is OneQueryTypedResult.None -> None(status = noneStatus, message = noneMessage ?: err.toString())
+        is OneQueryTypedResult.One -> One(
+            status = okStatus,
+            message = oneMessage ?: this.message,
+            response = this.value
+        )
     }
 }
 
@@ -106,10 +112,12 @@ fun <E : Any, ERR : Enum<*>> OneQueryTypedResult<E, ERR>.one(
 fun <E : Any> MutationResult<E>.one(
     noneStatus: HttpStatus,
     okStatus: HttpStatus = HttpStatus.OK,
+    oneMessage: String? = null,
+    noneMessage: String? = null
 ): OneResponse<E> {
     return when (this) {
-        is MutationResult.Failed -> None(status = noneStatus, message = message)
-        is MutationResult.Success -> One(status = okStatus, message = this.message, response = this.value)
+        is MutationResult.Failed -> None(status = noneStatus, message = noneMessage ?: message)
+        is MutationResult.Success -> One(status = okStatus, message = oneMessage ?: this.message, response = this.value)
     }
 }
 

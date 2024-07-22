@@ -28,7 +28,7 @@ sealed interface OneQueryTypedResult<R, ERR> {
         }
 
         @JvmName("mapToOQTR")
-        fun <R, ERR, R2> OneQueryTypedResult<R, ERR>.map(dsl: (R) -> OneQueryTypedResult<R2, ERR>): OneQueryTypedResult<R2, ERR> {
+        fun <R, ERR, R2> OneQueryTypedResult<R, ERR>.mapTo(dsl: (R) -> OneQueryTypedResult<R2, ERR>): OneQueryTypedResult<R2, ERR> {
             return when (this) {
                 is None -> None(err, message)
                 is One -> dsl(value)

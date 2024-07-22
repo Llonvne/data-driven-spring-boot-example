@@ -6,6 +6,8 @@ spring:
     log-request-details: true
 
   jpa:
+    hibernate:
+      ddl-auto: create-drop
     properties:
       hibernate:
         format_sql: true

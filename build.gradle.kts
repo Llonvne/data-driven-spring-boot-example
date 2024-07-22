@@ -29,6 +29,7 @@ dependencies {
     implementation("com.auth0:java-jwt:4.4.0")
     // https://mvnrepository.com/artifact/org.springframework/spring-aop
     implementation("org.springframework:spring-aop:6.1.10")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

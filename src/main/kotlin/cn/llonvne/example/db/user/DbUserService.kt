@@ -10,11 +10,8 @@ import cn.llonvne.example.db.internal.user.service.InternalDbUserEntityService
 import cn.llonvne.example.db.internal.user.service.InternalDbUserFollowService
 import cn.llonvne.example.db.result.*
 import cn.llonvne.example.db.user.mutation.*
-import cn.llonvne.example.db.user.pub.DbUser
-import cn.llonvne.example.db.user.query.DbUserFolloweesQuery
-import cn.llonvne.example.db.user.query.DbUserFollowersQuery
-import cn.llonvne.example.db.user.query.DbUserGetByIdQuery
-import cn.llonvne.example.db.user.query.DbUserLoginQuery
+import cn.llonvne.example.db.user.pub.UserId
+import cn.llonvne.example.db.user.query.*
 import cn.llonvne.example.db.user.type.*
 import cn.llonvne.example.db.user.type.DbUserLoginQueryError.PasswordNotCorrect
 import cn.llonvne.example.db.user.type.DbUserLoginQueryError.UsernameNotExist
@@ -26,12 +23,12 @@ import org.springframework.stereotype.Service
 @Service
 class DbUserService(
     private val repository: DbUserEntityRepository,
-    private val dbUserConverter: EntityConverter<DbUserEntity, DbUser>,
+    private val userIdConverter: EntityConverter<DbUserEntity, UserId>,
     private val entityService: InternalDbUserEntityService,
     private val followRepo: DbUserFollowRepository,
     private val followService: InternalDbUserFollowService
 ) {
-    fun newUser(newUser: DbUserNewMutation): MR<DbUser> {
+    fun newUser(newUser: DbUserNewMutation): MR<UserId> {
         if (repository.findByUsername(newUser.username) != null) {
             return MR_N("username already exist.")
         }
@@ -40,17 +37,17 @@ class DbUserService(
 
         val userEntity = repository.save(entity)
 
-        val user = dbUserConverter.convert(userEntity)
+        val user = userIdConverter.convert(userEntity)
 
         return MR_O(user, "successful create user")
     }
 
-    fun login(query: DbUserLoginQuery): OQTR<DbUser, DbUserLoginQueryError> {
+    fun login(query: DbUserLoginQuery): OQTR<UserId, DbUserLoginQueryError> {
         val entity = repository.findByUsername(query.username)
             ?: return OQTR_N(UsernameNotExist)
 
         if (PasswordEncoder.matches(rawPassword = query.password, encodedPassword = entity.password)) {
-            val user = dbUserConverter.convert(entity)
+            val user = userIdConverter.convert(entity)
 
             return OQTR_O(user, "successful login")
         } else {
@@ -58,22 +55,23 @@ class DbUserService(
         }
     }
 
-    fun getById(query: DbUserGetByIdQuery): OQR<DbUser> {
+    fun getById(query: DbUserGetByIdQuery): OQR<UserId> {
         val entity =
             entityService.getUserEntityByIdRaw(query.userId) ?: return OQR_N("User id not exist")
 
-        return OQR_O(dbUserConverter.convert(entity))
+        return OQR_O(userIdConverter.convert(entity))
     }
 
-    fun update(mutation: DbUserUpdateMutation): MTR<DbUser, DbUserUpdateMutationError> {
-        val entity = entityService.getUserEntityByIdRaw(mutation.dbUser.id)
+    fun update(mutation: DbUserUpdateMutation): MTR<UserId, DbUserUpdateMutationError> {
+        val entity = entityService.getUserEntityByIdRaw(mutation.userId.id)
             ?: return MTR_N(IdNotExist)
 
-        val updatedUser = entity.copy(username = mutation.dbUser.username)
+        val updatedUser = entity.copy()
+        TODO()
 
         val result = repository.save(updatedUser)
 
-        val dbUser = dbUserConverter.convert(result)
+        val dbUser = userIdConverter.convert(result)
 
         return MTR_O(dbUser)
     }
@@ -148,5 +146,11 @@ class DbUserService(
                 it.userId
             }
         )
+    }
+
+    fun username(query: DbUsernameQuery): OneQueryTypedResult<String, DbUsernameQueryError> {
+        val entity =
+            entityService.getUserEntityByIdRaw(query.userID.id) ?: return OQTR_N(DbUsernameQueryError.UserNotExist)
+        return OQTR_O(entity.username)
     }
 }

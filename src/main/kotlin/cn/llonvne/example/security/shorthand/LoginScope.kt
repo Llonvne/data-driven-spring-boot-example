@@ -1,6 +1,6 @@
 package cn.llonvne.example.security.shorthand
 
-import cn.llonvne.example.db.user.pub.DbUser
+import cn.llonvne.example.db.user.pub.UserId
 import cn.llonvne.example.req2resp.UnauthorizedResponseEntity
 import cn.llonvne.example.security.ProtectScope
 import cn.llonvne.example.security.ProtectScope.Companion.ProtectResult
@@ -11,17 +11,14 @@ import org.springframework.http.ResponseEntity
 /**
  * Shorthand for ProtectScope of DbUser Guard
  */
-class LoginScope private constructor(val tokenRaw: String) : ProtectScope<DbUser> {
+class LoginScope private constructor(val tokenRaw: String) : ProtectScope<UserId> {
     companion object {
         fun loginOrUnauthorized(
-            dsl: LoginScope.(DbUser) -> ResponseEntity<*>
+            dsl: LoginScope.(UserId) -> ResponseEntity<*>
         ): ResponseEntity<*> {
-            return when (val user = protect<DbUser>()) {
-                is ProtectResult.Failed -> UnauthorizedResponseEntity<String>()
-                is ProtectResult.Passed -> {
-                    LoginScope(user.tokenRaw).dsl(user.p)
-                }
-
+            return when (val user = protect<UserId>()) {
+                is ProtectResult.Failed -> UnauthorizedResponseEntity(user.message)
+                is ProtectResult.Passed -> { LoginScope(user.tokenRaw).dsl(user.p) }
                 is ProtectResult.GuardNotFound -> ResponseEntity<String>(
                     "Guard not found",
                     HttpStatus.INTERNAL_SERVER_ERROR

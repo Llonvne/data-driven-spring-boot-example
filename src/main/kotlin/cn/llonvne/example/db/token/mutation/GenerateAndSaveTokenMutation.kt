@@ -1,5 +1,5 @@
 package cn.llonvne.example.db.token.mutation
 
-import cn.llonvne.example.db.user.pub.DbUser
+import cn.llonvne.example.db.user.pub.UserId
 
-data class GenerateAndSaveTokenMutation(val dbUser: DbUser)
+data class GenerateAndSaveTokenMutation(val userId: UserId)

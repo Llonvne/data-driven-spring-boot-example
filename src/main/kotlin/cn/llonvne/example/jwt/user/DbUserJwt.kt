@@ -1,6 +1,6 @@
 package cn.llonvne.example.jwt.user
 
-import cn.llonvne.example.db.user.pub.DbUser
+import cn.llonvne.example.db.user.pub.UserId
 import cn.llonvne.example.jwt.Jwt
 import cn.llonvne.example.jwt.JwtInternalApi
 import cn.llonvne.example.jwt.internal.JwtInternal
@@ -14,8 +14,8 @@ import kotlin.time.toJavaDuration
 
 @JwtInternalApi
 @Component
-private class DbUserJwt(private val jwtInternal: JwtInternal, private val objectMapper: ObjectMapper) : Jwt<DbUser> {
-    override fun generate(value: DbUser, expiration: Duration): String =
+private class DbUserJwt(private val jwtInternal: JwtInternal, private val objectMapper: ObjectMapper) : Jwt<UserId> {
+    override fun generate(value: UserId, expiration: Duration): String =
         JWT.create()
             .withSubject(
                 objectMapper.writeValueAsString(value)
@@ -24,7 +24,7 @@ private class DbUserJwt(private val jwtInternal: JwtInternal, private val object
             .sign(jwtInternal.algorithm)
 
 
-    override fun decode(token: String): DbUser {
+    override fun decode(token: String): UserId {
         return objectMapper.readValue(jwtInternal.verifier.verify(token).subject)
     }
 }

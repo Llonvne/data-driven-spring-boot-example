@@ -3,7 +3,7 @@ package cn.llonvne.example.db.internal.user.converter
 import cn.llonvne.example.db.internal.EntityConverter
 import cn.llonvne.example.db.internal.user.UserInternalApi
 import cn.llonvne.example.db.internal.user.entity.DbUserEntity
-import cn.llonvne.example.db.user.pub.DbUser
+import cn.llonvne.example.db.user.pub.UserId
 import org.springframework.stereotype.Component
 
 /**
@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component
  */
 @Component
 @UserInternalApi
-object DbUserEntityToDbUserConverter : EntityConverter<DbUserEntity, DbUser> {
-    override fun convert(input: DbUserEntity): DbUser {
-        return DbUser(id = input.id, username = input.username)
+object DbUserEntityToDbUserConverter : EntityConverter<DbUserEntity, UserId> {
+    override fun convert(input: DbUserEntity): UserId {
+        return UserId(id = input.id)
     }
 }

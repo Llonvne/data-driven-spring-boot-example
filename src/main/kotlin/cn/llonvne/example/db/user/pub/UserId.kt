@@ -5,7 +5,6 @@ import cn.llonvne.example.security.GuardTypeMarker
 /**
  * a public representation of User domain.
  */
-data class DbUser(
+data class UserId(
     val id: String,
-    val username: String,
 ) : GuardTypeMarker

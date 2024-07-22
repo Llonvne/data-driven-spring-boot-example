@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.EnableAspectJAutoProxy
 
 @SpringBootApplication
-class TestJpaApplication
+class SpringBootExampleApplication
 
 
 @Configuration
@@ -22,5 +22,5 @@ class AppConfig {
 }
 
 fun main(args: Array<String>) {
-    runApplication<TestJpaApplication>(*args)
+    runApplication<SpringBootExampleApplication>(*args)
 }
